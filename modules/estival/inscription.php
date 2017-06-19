@@ -260,12 +260,14 @@ Le dispositif "En Forme à Pau" est organisé par la Ville de Pau à destination
  <b><u>Article 2</u> : </b>
 il est demandé à chaque participant de fournir un certificat médical de non contre indication à la pratique d'activités sportives et un brevet de natation de 25m pour l'activité Stand Up Paddle Board.<br><br>
  <b><u>Article 3</u>: </b>
-Les activités se déroulent sur des sites naturels de proximité (parcs, jardins, rivières) et sur les installations sportives municipales de la Ville de Pau <b>du 20 juin 2016 au 3 septembre 2016</b> aux horaires indiqués sur le programme d'activités.<br><br>
+Les activités se déroulent sur des sites naturels de proximité (parcs, jardins, rivières) et sur les installations sportives municipales de la Ville de Pau <b>du 26 juin 2017 au 3 septembre 2017</b> aux horaires indiqués sur le programme d'activités.<br><br>
  <b><u>Article 4</u> : </b>
 Les activités sportives proposées sont gratuites. La Ville de Pau dégage toute responsabilité pour les incidents ou accidents qui pourraient survenir en dehors des créneaux horaires prévus.
 <br><br>
  <b><u>Article 5</u> :</b>
 Les activités sont encadrées par des professionnels qualifiés et diplômés.<br><br>
+<b><u>Article 6</u> :</b>
+En cas d'indisponibilité, il est demandé à chacun de bien vouloir se désinscrire la veille de l'activité afin de libérer sa place.<br><br>
   </div><!-- /.box-body -->
   
 </div><!-- /.box -->         

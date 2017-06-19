@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+ 
+#garantira que toutes les demandes de fichiers et de dossiers qui n'existent pas seront redirigées vers index.php
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteRule ^([^/\.]+)/([^/\.]+)/([^/\.]+)/([^/\.]+)/?$ index.php?handler1=$1&handler2=$2&handler3=$3&handler4=$4 [QSA,L]
+ 
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-s
+    RewriteRule ^(.*)$ index.php?rquest=$1 [QSA,NC,L]
+ 
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^(.*)$ index.php [QSA,NC,L]
+ 
+    RewriteCond %{REQUEST_FILENAME} -s
+    RewriteRule ^(.*)$ index.php [QSA,NC,L]   
+</IfModule>
+

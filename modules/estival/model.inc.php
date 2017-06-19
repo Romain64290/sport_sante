@@ -352,6 +352,14 @@ $mail = new PHPMailer();
 // Encodage
 $mail->CharSet = 'UTF-8';
 
+//$mail->Host = '192.168.1.227';  // Specify main and backup SMTP servers
+//$mail->SMTPAuth = true;                               // Enable SMTP authentication
+//$mail->Username = 'therassonkonan@gmail.com';                 // SMTP username  'info@visionautoecole.ci';
+//$mail->Password = 'ther@sson1';                           // SMTP password
+//$mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
+//$mail->Port = 25;                                    // TCP port to connect to
+
+
 //=====Corps du message
 $body = "<html><head></head>
 <body>
@@ -362,8 +370,11 @@ Nous vous confirmons votre inscription aux activité(s) suivante(s): <br>
 $activite
 </ul>
 <br>
-Salutations<br>
+En cas d'indisponibilité, il est demandé à chacun de bien vouloir se désinscrire la veille de l'activité afin de libérer sa place.<br>
+La Ville de Pau vous remercie de votre participation.
 <br>
+<br>
+<i><small>En cas de difficulté pour vous désinscrire, merci de nous contacter <a href=\"mailto:r.taldu@agglo-pau.fr\">ici</a></small></i>
 </body>
 </html>";
 //==========

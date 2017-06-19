@@ -19,6 +19,7 @@ $connect = new connection();
 $estival = new estival($connect);
 
 $date_jour= date('Y-m-d H:i:s');
+$annee = date('Y');
 
 ?>
 
@@ -110,7 +111,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                   
 <?php 
 
-$data=$estival->afficheTousUser(); 
+$data=$estival->afficheTousUser($annee); 
 
 $compteur = 1;
 

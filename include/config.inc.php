@@ -37,12 +37,11 @@
   // Réglage des locales
   setlocale(LC_ALL, 'fr_FR.UTF-8');
   
-  // Adresse du site
-  //define('URL_SITE', 'http://sport2.cyberbase.local');
-  define("URL_SITE", "http://".$_SERVER['HTTP_HOST']);
+   // Adresse du site
+   define("URL_SITE", "https://".$_SERVER['HTTP_HOST']);
   
   // Adapter le logo de l'administration en fonction de l'url d'origine.
- if(URL_SITE=="http://sport2.cyberbase.local"){define("LOGO_ADMIN", "logo_pausport.png");}  //version dev
- if(URL_SITE=="http://efapau1.agglo-pau.fr"){define("LOGO_ADMIN", "logo_enforme.png");}		
- if(URL_SITE=="http://mapausport.agglo-pau.fr"){define("LOGO_ADMIN", "logo_pausport.png");}
- if(URL_SITE=="http://efapau2.agglo-pau.fr"){define("LOGO_ADMIN", "logo_enforme.png");}
+ if($_SERVER['HTTP_HOST']=="sport2.cyberbase.local"){define("LOGO_ADMIN", "logo_pausport.png");}  //version dev
+ if($_SERVER['HTTP_HOST']=="efapau1.agglo-pau.fr"){define("LOGO_ADMIN", "logo_enforme.png");}		
+ if($_SERVER['HTTP_HOST']=="mapausport.agglo-pau.fr"){define("LOGO_ADMIN", "logo_pausport.png");}
+ if($_SERVER['HTTP_HOST']=="efapau2.agglo-pau.fr"){define("LOGO_ADMIN", "logo_enforme.png");}

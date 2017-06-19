@@ -23,3 +23,4 @@ $estival = new estival($connect);
 $estival->emailAbsent($id_activite);
 
 header('Location:edit.php?id_activite='.$id_activite.'&emailabsent=ok');
+

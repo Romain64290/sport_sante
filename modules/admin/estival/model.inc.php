@@ -208,17 +208,22 @@ return $data;
  * Affichage de tous les utilisateurs
  **************************************************************************/
   
- function afficheTousUser()
+ function afficheTousUser($annee)
   {
+  
+$annee ="%$annee%";
     
 try{
 // recherche de charque particpant 
 $select = $this->con->prepare('SELECT estival_user.id_estival_user,nom_estival_user,prenom_estival_user,age_estival_user
 						FROM estival_user
+                                                WHERE date_inscription LIKE :annee
 						ORDER BY nom_estival_user ASC
 						');
 						
-$select->execute();
+$select->execute(array(
+':annee' => $annee
+		));
 }
  catch (PDOException $e){
        echo $e->getMessage() . " <br><b>Erreur lors de l'Affichage des utilisateurs</b>\n";

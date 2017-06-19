@@ -77,7 +77,7 @@ $session_activite = isset($_SESSION['activite']) ? $_SESSION['activite'] : NULL;
         <section class="content-header">
           <h1>
              <img src="images/logo_50.png" style="margin-top:-10px;margin-bottom:-10px">
-            <small>Programmation été 2016</small>
+            <small>Programmation été 2017</small>
           </h1>
         </section>	
   	<!-- Main content -->
@@ -287,7 +287,7 @@ foreach($data as $event){
 			
 			if($start_estival_activite <$date_jour_plus4){$description="<b>[ La réservation de cette activité est clôturée : 4h avant le début de l'activité. ]</b><br><br>";$color_estival_activite="#666666";}
 			
-			$description.="<b>Proposée par : </b> ".$association_estival_activite.", le ".$jour_activite." de ".$heure_debut." à ".$heure_fin." : ".$lieu_estival_activite."<br>".$date_jour_plus4;
+			$description.="<b>Proposée par : </b> ".$association_estival_activite.", le ".$jour_activite." de ".$heure_debut." à ".$heure_fin." : ".$lieu_estival_activite."<br>";
 			
 			if($description_estival_activite!=""){$description.="<br><b>Description : </b>".$description_estival_activite."<br>";}
 			if($lieu_repli_estival_activite!=""){$description.="<br><b>Lieu de repli : </b>".$lieu_repli_estival_activite."<br>";}
