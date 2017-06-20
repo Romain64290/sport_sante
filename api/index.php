@@ -1,5 +1,5 @@
 <?php
-// bug des messages d'erreurs ( pquoi erreur "que dalle " ne fonctionne pas ?
+// revoir la numerotation des erreurs et les texts (openclassroom)
 
 //http://www.tutorialsface.com/2016/02/simple-php-mysql-rest-api-sample-example-tutorial/
 //http://sport2.cyberbase.local/api/admin/43?user=r.taldu@agglo-pau.fr&password=4075cc72e829861798e3be24010317e2094d637c
@@ -41,8 +41,9 @@ $verif=$apimodels->verifIdentifiants($user,$password);
         
         // pas de reponse à la requette
     if ($resultat ==NULL) {
-     //$this->response('pas de contenu',204);
-     echo"que dalle";
+         $this->response('pas de contenu',403);
+    // marche pas avec204
+    // echo"que dalle";
     }else{
      $resultat=$this->json($resultat);           
   // If success everythig is good send header as "OK" return param
@@ -211,7 +212,7 @@ private function participant($id){
     */
     private function json($data){
         if(is_array($data)){
-            return json_encode($data);
+            return json_encode($data,JSON_PRETTY_PRINT);
         }
     }
 }

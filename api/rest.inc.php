@@ -115,5 +115,3 @@
             header("Content-Type:".$this->_content_type);
         }
     }   
-?>
-
