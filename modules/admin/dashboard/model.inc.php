@@ -141,7 +141,12 @@ $result = $select->fetch();
 
 // additionne l'age total
 try{
-$select2 = $this->con->prepare('SELECT age_estival_user FROM estival_user');
+$select2 = $this->con->prepare('SELECT age_estival_user '
+        . 'FROM estival_user '
+        . 'WHERE date_inscription LIKE :date');
+
+$select2->bindParam(':date', $annee, PDO::PARAM_STR);	
+
 $select2->execute();
 	}
 	 catch (PDOException $f){
