@@ -631,7 +631,8 @@ $total_communes=$result['nbr'];
 
 // nombre de participants venant de pau	
 	try{
-$select2 = $this->con->prepare('SELECT COUNT(*) as nbr FROM estival_user WHERE residence_estival_user LIKE "pau"');
+$select2 = $this->con->prepare('SELECT COUNT(*) as nbr FROM estival_user WHERE residence_estival_user LIKE "pau" AND date_inscription LIKE :date');
+$select2->bindParam(':date', $annee, PDO::PARAM_STR);
 $select2->execute();
 		}
 	 catch (PDOException $f){
@@ -645,7 +646,8 @@ $total_pau=$result2['nbr'];
 
 // nombre de participants venant de l'extérieur de l'agglo
 	try{
-$select3 = $this->con->prepare('SELECT COUNT(*) as nbr FROM estival_user WHERE residence_estival_user LIKE "autre"');
+$select3 = $this->con->prepare('SELECT COUNT(*) as nbr FROM estival_user WHERE residence_estival_user LIKE "autre" AND date_inscription LIKE :date');
+$select3->bindParam(':date', $annee, PDO::PARAM_STR);
 $select3->execute();
 		}
 	 catch (PDOException $g){
