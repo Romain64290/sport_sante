@@ -216,7 +216,10 @@ $result = $select->fetch();
 
 // nombre de femmes
 try{
-$select2 = $this->con->prepare('SELECT COUNT(*) as nbr FROM estival_user WHERE civilite_estival_user=2');
+$select2 = $this->con->prepare('SELECT COUNT(*) as nbr FROM estival_user WHERE civilite_estival_user=2 AND date_inscription LIKE :date');
+
+$select2->bindParam(':date', $annee, PDO::PARAM_STR);
+
 $select2->execute();
 	}
 	 catch (PDOException $f){
