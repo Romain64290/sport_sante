@@ -491,88 +491,67 @@ WHERE id_estival_activite  = :id_estival_activite');
   
  function emailAbsent($id_activite)
   {
- /* 
-  // recupération des informations sur la reunion
-  try{
-    	
-		$select = $this->con->prepare('SELECT * 
-	    FROM reunion
-	    INNER JOIN communes ON communes.id_commune=reunion.id_commune
-		WHERE id_reunion  = :id_reunion');
-				
+ 	
+ 
+// recupération des informations sur l'activite
+ try{
+$select = $this->con->prepare('SELECT * 
+		FROM estival_activite
+		WHERE id_estival_activite  = :id_estival_activite');
+						
+		$select->execute(array(
+		':id_estival_activite' => $id_activite
+		));
 		
-		$select->bindParam(':id_reunion', $id_reunion, PDO::PARAM_INT);
-		$select->execute();
 		
-		$info_reunion = $select->fetch();
 		
-		}
-		
-	 catch (PDOException $e){
-       echo $e->getMessage() . " <br><b>Erreur lors de l'affichage de la réunion</b>\n";
+	 }
+  catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors de la recupération des informations sur la reunion</b>\n";
 	throw $e;
         exit;
     }
   
-$date_reunion=$info_reunion['date_reunion'];
-$nom_commune=$info_reunion['nom_commune'];
-$adresse=htmlspecialchars($info_reunion['adresse']);
-$lien_map=htmlspecialchars($info_reunion['lien_map']);
-	
-$date_expl=explode(" ",$date_reunion);
-$heure=explode(":",$date_expl[1]);
-$heure=$heure[0].":".$heure[1];
-$date_debut=explode("-",$date_expl[0]);
-		 
-switch ($date_debut[1]) {
-	case '1': $date_mois[1]="Janvier";break;
-	case '2': $date_mois[1]="Février";break;
-	case '3': $date_mois[1]="Mars";break;
-	case '4': $date_mois[1]="Avril";break;
-	case '5': $date_mois[1]="Mai";break;
-	case '6': $date_mois[1]="Juin";break;
-	case '7': $date_mois[1]="Juillet";break;
-	case '8': $date_mois[1]="Août";break;
-	case '9': $date_mois[1]="Septembre";break;
-	case '10': $date_mois[1]="Octobre";break;
-	case '11': $date_mois[1]="Novembre";break;
-	case '12': $date_mois[1]="Décembre";break;  
-}
+$result= $select->fetch(); 
+  
+$titre=$result[1];
+
+$date=$result[4];
+$date=explode(" ",$date);
+$jour=explode("-",$date[0]);
+$date_calendar=$date[0];
+$heure=explode(":",$date[1]);
+$date="le ".$jour[2]."/".$jour[1]." à ".$heure[0]."h".$heure[1];
+
   
   // selection des emails des inscrits non présent
-   try{
- 
+ try{	
+$select = $this->con->prepare('SELECT estival_user.id_estival_user,nom_estival_user,prenom_estival_user,age_estival_user,residence_estival_user,tel_estival_user,email_estival_user,estival_user_has_activite.presence_reunion
+						FROM estival_user
+						INNER JOIN estival_user_has_activite ON estival_user.id_estival_user=estival_user_has_activite.id_estival_user
+						WHERE id_estival_activite  = :id_estival_activite AND presence_reunion  != 1');
+						
+$select->execute(array(
+		':id_estival_activite' => $id_activite
+		));
 		
-		$select = $this->con->prepare('SELECT * 
-	    FROM reunion_has_usagers
-	    INNER JOIN usager ON reunion_has_usagers.id_usager=usager.id_usager
-	    INNER JOIN communes ON usager.id_commune=communes.id_commune
-		WHERE reunion_has_usagers.id_reunion  = :id_reunion AND usager.presence_reunion = 0
-		ORDER BY usager.nom ASC');
-				
-		
-		$select->bindParam(':id_reunion', $id_reunion, PDO::PARAM_INT);
-		$select->execute();
-		
-		$data = $select->fetchAll(PDO::FETCH_OBJ);
-	//	return $data;
-		
-		}
-		
-	 catch (PDOException $f){
-       echo $f->getMessage() . " <br><b>Erreur lors de l'affichage de la réunion</b>\n";
-	throw $f;
+ $data = $select->fetchAll(PDO::FETCH_OBJ);		
+}
+ catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors de l'Affichage des utilisateurs</b>\n";
+	throw $e;
         exit;
-    }
+    }		
   
+
    
   // envoi d'un email à chaque inscrit
  
-  foreach ($data as $key) 
+ foreach ($data as $key) 
   	{
   	
 	
-$email=$key->email;
+$email=$key->email_estival_user;
 
 // Création d'un nouvel objet $mail
 $mail = new PHPMailer();
@@ -586,10 +565,9 @@ $body = "<html><head></head>
 <body>
 Bonjour,<br>
 <br>
-Vous étiez inscrits à la réunion du $date_debut[2] $date_mois[1] à $heure ($nom_commune) pour venir retirer un (lombri)composteur, mais, sauf erreur de notre part, vous n'êtes pas venu. <br>
-Pour des raisons pratiques et pour permettre au plus grand nombre d'y participer, il est préférable de nous informer en cas d'empêchement pour que nous puissions inscrire une autre personne à votre place (nous avons une liste d'attente importante pour retirer un composteur).<br>
-Si vous souhaitez vous réinscrire, nous vous invitons à <a href=\"http://www.agglo-pau.fr/au-quotidien/les-dechets/98-compostage/487-demander-un-composteur-gratuit-et-se-former.html\">cliquer ici</a> <br>
-En cas de besoin, merci de nous contacter par mail à <a href=\"mailto:collecte@agglo-pau.fr\">collecte@agglo-pau.fr</a> ou par téléphone au 05 59 14 64 30<br><br>
+Vous étiez inscrits à l'activité $titre $date, mais, sauf erreur de notre part, vous n'êtes pas venu. <br>
+Pour des raisons pratiques et pour permettre au plus grand nombre d'y participer, il est préférable de nous informer en cas d'empêchement pour que nous puissions inscrire une autre personne à votre place .<br>
+En cas de besoin, merci de nous contacter au 05 59 27 27 08<br><br>
 Salutations<br>
 <br>
 </body>
@@ -604,7 +582,7 @@ $mail->AddReplyTo("NO-REPLY@agglo-pau.fr", "NO REPLY"); //Pour que l'usager rép
 $mail->AddAddress($email); 
 
 // Sujet du mail
-$mail->Subject = "Réunion de sensibilisation au compostage";
+$mail->Subject = "Ville de Pau - En forme à Pau";
 // Le message
 $mail->MsgHTML($body);
 
@@ -617,10 +595,10 @@ unset($mail);
       
  	 }
  
- */
+
  
  //Enregistrement "email envoyé" dans la fiche activite
-	try{	
+try{	
 $update = $this->con->prepare('UPDATE estival_activite SET email_absent = 1  WHERE id_estival_activite  = :id_activite'); 
 
 $update->bindParam(':id_activite', $id_activite, PDO::PARAM_INT);
@@ -633,9 +611,10 @@ $update->execute();
         }		
  
 
-  
+
 	
   }
+
 
 /***********************************************************************
  * Mise à jour des présences aux réunions
