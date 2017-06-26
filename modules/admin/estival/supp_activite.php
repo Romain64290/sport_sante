@@ -18,6 +18,10 @@ $origine=$_GET['origine'];
 $connect = new connection();
 $estival = new estival($connect);
 
+//envoi d'un email à tous les participants
+//$compostage->emailSupActivite($_GET['id_activite']);
+
+//suppression de la activite et des jointures
 $resultat=$estival->suppActivite($_GET['id_activite']);
 
 

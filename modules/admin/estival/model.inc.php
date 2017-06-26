@@ -215,7 +215,7 @@ $annee ="%$annee%";
     
 try{
 // recherche de charque particpant 
-$select = $this->con->prepare('SELECT estival_user.id_estival_user,nom_estival_user,prenom_estival_user,age_estival_user
+$select = $this->con->prepare('SELECT *
 						FROM estival_user
                                                 WHERE date_inscription LIKE :annee
 						ORDER BY nom_estival_user ASC
@@ -301,7 +301,139 @@ $select = $this->con->prepare('SELECT *
 	 return $data;
 }
 
+/***********************************************************************
+ * Envoi d'un email aux inscrit lors de la supp d'une activite
+ **************************************************************************/
+  
+ function emailSuppActivite($id_activite)
+  {
+  
+  // reupération des information sur la reunion
+  try{
+    	
+		$select = $this->con->prepare('SELECT * 
+	    FROM reunion
+	    INNER JOIN communes ON communes.id_commune=reunion.id_commune
+		WHERE id_reunion  = :id_reunion');
+				
+		
+		$select->bindParam(':id_reunion', $id_reunion, PDO::PARAM_INT);
+		$select->execute();
+		
+		$info_reunion = $select->fetch();
+		
+		}
+		
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors de l'affichage de la réunion</b>\n";
+	throw $e;
+        exit;
+    }
+  
+$date_reunion=$info_reunion['date_reunion'];
+$nom_commune=$info_reunion['nom_commune'];
+$adresse=htmlspecialchars($info_reunion['adresse']);
+$lien_map=htmlspecialchars($info_reunion['lien_map']);
+	
+$date_expl=explode(" ",$date_reunion);
+$heure=explode(":",$date_expl[1]);
+$heure=$heure[0].":".$heure[1];
+$date_debut=explode("-",$date_expl[0]);
+		 
+switch ($date_debut[1]) {
+	case '1': $date_mois[1]="Janvier";break;
+	case '2': $date_mois[1]="Février";break;
+	case '3': $date_mois[1]="Mars";break;
+	case '4': $date_mois[1]="Avril";break;
+	case '5': $date_mois[1]="Mai";break;
+	case '6': $date_mois[1]="Juin";break;
+	case '7': $date_mois[1]="Juillet";break;
+	case '8': $date_mois[1]="Août";break;
+	case '9': $date_mois[1]="Septembre";break;
+	case '10': $date_mois[1]="Octobre";break;
+	case '11': $date_mois[1]="Novembre";break;
+	case '12': $date_mois[1]="Décembre";break;  
+}
+  
+  // selection des emails de tous les inscrits
+   try{
+    	
+		$select = $this->con->prepare('SELECT * 
+	    FROM reunion_has_usagers
+	    INNER JOIN usager ON reunion_has_usagers.id_usager=usager.id_usager
+		WHERE reunion_has_usagers.id_reunion  = :id_reunion');
+				
+		
+		$select->bindParam(':id_reunion', $id_reunion, PDO::PARAM_INT);
+		$select->execute();
+		
+		$liste_inscrits = $select->fetchAll(PDO::FETCH_OBJ);
+		
+		}
+		
+	 catch (PDOException $f){
+       echo $f->getMessage() . " <br><b>Erreur lors de l'affichage de la réunion</b>\n";
+	throw $f;
+        exit;
+    }
+  
+   
+  // envoi d'un email à chaque inscrit
+  
+  foreach ($liste_inscrits as $key) 
+  	{
+  	
+	
+$email=$key->email;
 
+// Création d'un nouvel objet $mail
+$mail = new PHPMailer();
+
+// Encodage
+$mail->CharSet = 'UTF-8';
+
+//=====Corps du message
+$body = "<html><head></head>
+<body>
+Bonjour,<br>
+<br>
+Nous vous informons que la réunion de sensiblisation (lombri)compostage suivante a été annulée: <br>
+<ul>
+<li><b>Reunion le $date_debut[2] $date_mois[1] à $heure - $nom_commune - $adresse  </b></li>
+</ul>
+<br>Veuillez nous excuser pour ce désagrément<br>
+Pour tout renseignement complémentaire, vous pouvez nous contacter au 05 59 14 64 30<br><br>
+Salutations<br>
+<br>
+</body>
+</html>";
+//==========
+
+
+// Expediteur, adresse de retour et destinataire :
+$mail->SetFrom(FROM_EMAIL, "Agglomération Pau-Pyrénées"); //L'expediteur du mail
+$mail->AddReplyTo("NO-REPLY@agglo-pau.fr", "NO REPLY"); //Pour que l'usager réponde au mail
+//mail du destinataire
+$mail->AddAddress($email); 
+
+// Sujet du mail
+$mail->Subject = "[ANNULATION] Réunion de sensibilisation au compostage";
+// Le message
+$mail->MsgHTML($body);
+
+
+// Envoi de l'email
+$mail->Send();
+
+unset($mail);
+
+      
+ 	 }
+  
+	
+  }
+ 
+ 
 
 /***********************************************************************
  * Suppression d'une activité

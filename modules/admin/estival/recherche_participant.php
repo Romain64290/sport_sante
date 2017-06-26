@@ -103,6 +103,8 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	<th>#</th>
                         <th>Nom</th>
                         <th>Prénom</th>
+                        <th>Téléphone</th>
+                        <th>Email</th>
                         <th>Date de naissance</th>
                         <th>Activité(s)</th>
                       </tr>
@@ -119,7 +121,9 @@ foreach($data as $event){
 			
 			$id=$event->id_estival_user;
 			$nom=htmlspecialchars($event->nom_estival_user);
-		    $prenom=htmlspecialchars($event->prenom_estival_user);
+                        $prenom=htmlspecialchars($event->prenom_estival_user);
+                        $email=htmlspecialchars($event->email_estival_user);
+                        $telephone=htmlspecialchars($event->tel_estival_user);
 			$naissance=$event->age_estival_user;
 			
 	
@@ -131,9 +135,11 @@ echo"
 
 <tr>
             <td style=\"width:5%; text-align: left\">$compteur</td>
-            <td style=\"width: 20%; text-align: left\">$nom</td>
-            <td style=\"width: 20%; text-align: left\">$prenom</td>
-            <td style=\"width: 20%; text-align: left\">$naissance</td>
+            <td style=\"width: 12%; text-align: left\">$nom</td>
+            <td style=\"width: 12%; text-align: left\">$prenom</td>
+            <td style=\"width: 12%; text-align: left\">$telephone</td>
+            <td style=\"width: 12%; text-align: left\">$email</td>
+            <td style=\"width: 12%; text-align: left\">$naissance</td>
             <td style=\"width: 35%; text-align: left\">";
 			
 			
