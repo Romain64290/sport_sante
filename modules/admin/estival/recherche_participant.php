@@ -101,8 +101,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                     <thead>
                       <tr>
                       	<th>#</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
+                        <th>Nom / Prénom</th>
                         <th>Téléphone</th>
                         <th>Email</th>
                         <th>Date de naissance</th>
@@ -135,8 +134,7 @@ echo"
 
 <tr>
             <td style=\"width:5%; text-align: left\">$compteur</td>
-            <td style=\"width: 12%; text-align: left\">$nom</td>
-            <td style=\"width: 12%; text-align: left\">$prenom</td>
+            <td style=\"width: 24%; text-align: left\">$nom $prenom</td>
             <td style=\"width: 12%; text-align: left\">$telephone</td>
             <td style=\"width: 12%; text-align: left\">$email</td>
             <td style=\"width: 12%; text-align: left\">$naissance</td>
