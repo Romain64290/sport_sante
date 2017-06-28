@@ -5,6 +5,7 @@
 
 require(__DIR__ .'/../../../include/config.inc.php');
 require(__DIR__ .'/../../../include/connexion.inc.php');
+require(__DIR__ .'/../../../plugins/PHPMailer/class.phpmailer.php');
 require(__DIR__ .'/model.inc.php');
 
 // verifie que la session est active, sinon reoriente vers la page de login
@@ -24,6 +25,9 @@ $estival = new estival($connect);
 
 
 $resultat=$estival->majActivite($_POST['id_activite'],$_POST['nom'],$_POST['date'],$_POST['heure_debut'],$_POST['heure_fin'],$_POST['description'],$_POST['association'],$_POST['lieu'],$_POST['repli'],$_POST['public'],$_POST['limite'],$_POST['couleur'],$_POST['lien_map']);
+
+//envoi d'un email à tous les participants
+$estival->emailEditActivite($_POST['id_activite']);
 
 
 if($origine=="listing"){header('Location: listing.php');}else{header('Location: calendrier.php');}

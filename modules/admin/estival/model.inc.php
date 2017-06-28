@@ -302,6 +302,135 @@ $select = $this->con->prepare('SELECT *
 }
 
 /***********************************************************************
+ * Envoi d'un email aux inscrits lors de la modification d'une activite
+ **************************************************************************/
+  
+ function emailEditActivite($id_activite)
+  {
+  
+  // reupération des information sur la activité
+  try{
+    	
+		$select = $this->con->prepare('SELECT * 
+	    FROM estival_activite
+	   WHERE id_estival_activite  = :id_activite');
+				
+		
+		$select->bindParam(':id_activite', $id_activite, PDO::PARAM_INT);
+		$select->execute();
+		
+		$info_activite = $select->fetch();
+		
+		}
+		
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors de l'affichage de la réunion</b>\n";
+	throw $e;
+        exit;
+    }
+
+$titre_estival_activite=htmlspecialchars($info_activite['titre_estival_activite']);
+$start_estival_activite=$info_activite['start_estival_activite'];
+$end_estival_activite=$info_activite['end_estival_activite'];
+$lieu_estival_activite=htmlspecialchars($info_activite['lieu_estival_activite']);
+$lien_map=htmlspecialchars($info_activite['lien_map']);
+	
+$jour_activite=explode(" ",$start_estival_activite);
+$jour_activite=explode("-",$jour_activite[0]);
+$jour_activite=$jour_activite[2]."/".$jour_activite[1];
+	
+$heure_debut=explode(" ",$start_estival_activite);
+$heure_debut=explode(":",$heure_debut[1]);
+$heure_debut=$heure_debut[0]."h".$heure_debut[1];
+
+$heure_fin=explode(" ",$end_estival_activite);
+$heure_fin=explode(":",$heure_fin[1]);
+$heure_fin=$heure_fin[0]."h".$heure_fin[1];
+			
+  
+  // selection des emails de tous les inscrits
+   try{
+    	
+		$select = $this->con->prepare('SELECT * 
+	    FROM estival_user_has_activite
+	    INNER JOIN estival_user ON estival_user_has_activite.id_estival_user=estival_user.id_estival_user
+            WHERE estival_user_has_activite.id_estival_activite  = :id_activite');
+				
+		
+		$select->bindParam(':id_activite', $id_activite, PDO::PARAM_INT);
+		$select->execute();
+		
+		$liste_inscrits = $select->fetchAll(PDO::FETCH_OBJ);
+		
+		}
+		
+	 catch (PDOException $f){
+       echo $f->getMessage() . " <br><b>Erreur lors de l'affichage de la réunion</b>\n";
+	throw $f;
+        exit;
+    }
+  
+   
+  // envoi d'un email à chaque inscrit
+  
+  foreach ($liste_inscrits as $key) 
+  	{
+  	
+	
+$email=$key->email_estival_user;
+$id_user=$key->id_estival_user;	
+
+// Création d'un nouvel objet $mail
+$mail = new PHPMailer();
+
+// Encodage
+$mail->CharSet = 'UTF-8';
+
+//=====Corps du message
+$body = "<html><head></head>
+<body>
+Bonjour,<br>
+<br>
+Nous vous informons de modifications sur l'une de vos activités. Voici les nouvelles informations :  <br>
+<ul>
+<li>$titre_estival_activite le $jour_activite de $heure_debut à $heure_fin - $lieu_estival_activite  </b><a href=\"$lien_map\" target=\"_blank\"> (voir l'adresse sur Google Map)</a> - [<a href=\"".URL_SITE."/modules/estival/validation_desinscription.php?id_user=$id_user&id_activite=$id_activite&email=$email\">Se désinscrire</a>]</li>
+</ul>
+<br>Veuillez nous excuser de ce changement<br>
+Pour tout renseignement complémentaire, vous pouvez nous contacter au 05 59 27 27 08<br><br>
+Salutations<br>
+<br>
+</body>
+</html>";
+//==========
+
+
+// Expediteur, adresse de retour et destinataire :
+$mail->SetFrom(FROM_EMAIL, "Ville de Pau"); //L'expediteur du mail
+$mail->AddReplyTo("NO-REPLY@agglo-pau.fr", "NO REPLY"); //Pour que l'usager réponde au mail
+//mail du destinataire
+$mail->AddAddress($email); 
+
+// Sujet du mail
+$mail->Subject = "[MODIFICATION] En forme à Pau - $titre_estival_activite du $jour_activite";
+// Le message
+$mail->MsgHTML($body);
+
+
+// Envoi de l'email
+$mail->Send();
+
+unset($mail);
+
+      
+ 	 }
+  
+	
+  }
+
+
+
+
+/***********************************************************************
  * Envoi d'un email aux inscrit lors de la supp d'une activite
  **************************************************************************/
   
