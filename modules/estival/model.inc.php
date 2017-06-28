@@ -370,11 +370,11 @@ Nous vous confirmons votre inscription aux activité(s) suivante(s): <br>
 $activite
 </ul>
 <br>
-En cas d'indisponibilité, il est demandé à chacun de bien vouloir se désinscrire la veille de l'activité afin de libérer sa place.<br>
+En cas d'indisponibilité, il est demandé à chacun de bien vouloir se désinscrire la veille de l'activité afin de libérer sa place.<br>En cas de mauvais temps, le lieu de repli de l'activité vous sera communiqué par mail <br>
 La Ville de Pau vous remercie de votre participation.
 <br>
 <br>
-<i><small>En cas de difficulté pour vous désinscrire, merci de nous contacter <a href=\"mailto:r.taldu@agglo-pau.fr\">ici</a></small></i>
+<i><small>Si vous rencontrez des difficultés pour vous désinscrire, merci de nous contacter <a href=\"mailto:r.taldu@agglo-pau.fr\">ici</a></small></i>
 </body>
 </html>";
 //==========

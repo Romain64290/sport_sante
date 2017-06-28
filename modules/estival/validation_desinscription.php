@@ -76,7 +76,7 @@ $email=$_GET['email'];
         <section class="content-header">
           <h1>
              <img src="images/logo_50.png" style="margin-top:-10px;margin-bottom:-10px">
-            <small>Programmation été 2016</small>
+            <small>Programmation été 2017</small>
           </h1>
         </section>
 <div class="masqueimgpourmobile">

@@ -308,19 +308,18 @@ $select = $this->con->prepare('SELECT *
  function emailSuppActivite($id_activite)
   {
   
-  // reupération des information sur la reunion
+  // reupération des information sur la activité
   try{
     	
 		$select = $this->con->prepare('SELECT * 
-	    FROM reunion
-	    INNER JOIN communes ON communes.id_commune=reunion.id_commune
-		WHERE id_reunion  = :id_reunion');
+	    FROM estival_activite
+	   WHERE id_estival_activite  = :id_activite');
 				
 		
-		$select->bindParam(':id_reunion', $id_reunion, PDO::PARAM_INT);
+		$select->bindParam(':id_activite', $id_activite, PDO::PARAM_INT);
 		$select->execute();
 		
-		$info_reunion = $select->fetch();
+		$info_activite = $select->fetch();
 		
 		}
 		
@@ -329,42 +328,29 @@ $select = $this->con->prepare('SELECT *
 	throw $e;
         exit;
     }
-  
-$date_reunion=$info_reunion['date_reunion'];
-$nom_commune=$info_reunion['nom_commune'];
-$adresse=htmlspecialchars($info_reunion['adresse']);
-$lien_map=htmlspecialchars($info_reunion['lien_map']);
+
+$titre_estival_activite=htmlspecialchars($info_activite['titre_estival_activite']);
+$start_estival_activite=$info_activite['start_estival_activite'];
+			
+$jour_activite=explode(" ",$start_estival_activite);
+$jour_activite=explode("-",$jour_activite[0]);
+$jour_activite=$jour_activite[2]."/".$jour_activite[1];
 	
-$date_expl=explode(" ",$date_reunion);
-$heure=explode(":",$date_expl[1]);
-$heure=$heure[0].":".$heure[1];
-$date_debut=explode("-",$date_expl[0]);
-		 
-switch ($date_debut[1]) {
-	case '1': $date_mois[1]="Janvier";break;
-	case '2': $date_mois[1]="Février";break;
-	case '3': $date_mois[1]="Mars";break;
-	case '4': $date_mois[1]="Avril";break;
-	case '5': $date_mois[1]="Mai";break;
-	case '6': $date_mois[1]="Juin";break;
-	case '7': $date_mois[1]="Juillet";break;
-	case '8': $date_mois[1]="Août";break;
-	case '9': $date_mois[1]="Septembre";break;
-	case '10': $date_mois[1]="Octobre";break;
-	case '11': $date_mois[1]="Novembre";break;
-	case '12': $date_mois[1]="Décembre";break;  
-}
+$heure_debut=explode(" ",$start_estival_activite);
+$heure_debut=explode(":",$heure_debut[1]);
+$heure_debut=$heure_debut[0]."h".$heure_debut[1];
+			
   
   // selection des emails de tous les inscrits
    try{
     	
 		$select = $this->con->prepare('SELECT * 
-	    FROM reunion_has_usagers
-	    INNER JOIN usager ON reunion_has_usagers.id_usager=usager.id_usager
-		WHERE reunion_has_usagers.id_reunion  = :id_reunion');
+	    FROM estival_user_has_activite
+	    INNER JOIN estival_user ON estival_user_has_activite.id_estival_user=estival_user.id_estival_user
+            WHERE estival_user_has_activite.id_estival_activite  = :id_activite');
 				
 		
-		$select->bindParam(':id_reunion', $id_reunion, PDO::PARAM_INT);
+		$select->bindParam(':id_activite', $id_activite, PDO::PARAM_INT);
 		$select->execute();
 		
 		$liste_inscrits = $select->fetchAll(PDO::FETCH_OBJ);
@@ -384,7 +370,7 @@ switch ($date_debut[1]) {
   	{
   	
 	
-$email=$key->email;
+$email=$key->email_estival_user;
 
 // Création d'un nouvel objet $mail
 $mail = new PHPMailer();
@@ -397,12 +383,12 @@ $body = "<html><head></head>
 <body>
 Bonjour,<br>
 <br>
-Nous vous informons que la réunion de sensiblisation (lombri)compostage suivante a été annulée: <br>
+Nous vous informons que l'activité suivante a été annulée: <br>
 <ul>
-<li><b>Reunion le $date_debut[2] $date_mois[1] à $heure - $nom_commune - $adresse  </b></li>
+<li><b> $titre_estival_activite du $jour_activite à $heure_debut</b></li>
 </ul>
 <br>Veuillez nous excuser pour ce désagrément<br>
-Pour tout renseignement complémentaire, vous pouvez nous contacter au 05 59 14 64 30<br><br>
+Pour tout renseignement complémentaire, vous pouvez nous contacter au 05 59 27 27 08<br><br>
 Salutations<br>
 <br>
 </body>
@@ -411,13 +397,13 @@ Salutations<br>
 
 
 // Expediteur, adresse de retour et destinataire :
-$mail->SetFrom(FROM_EMAIL, "Agglomération Pau-Pyrénées"); //L'expediteur du mail
+$mail->SetFrom(FROM_EMAIL, "Ville de Pau"); //L'expediteur du mail
 $mail->AddReplyTo("NO-REPLY@agglo-pau.fr", "NO REPLY"); //Pour que l'usager réponde au mail
 //mail du destinataire
-$mail->AddAddress($email); 
+$mail->AddAddress($email);  
 
 // Sujet du mail
-$mail->Subject = "[ANNULATION] Réunion de sensibilisation au compostage";
+$mail->Subject = "[ANNULATION] En forme à Pau - $titre_estival_activite du $jour_activite";
 // Le message
 $mail->MsgHTML($body);
 
@@ -708,7 +694,7 @@ Salutations<br>
 
 
 // Expediteur, adresse de retour et destinataire :
-$mail->SetFrom(FROM_EMAIL, "Agglomération Pau-Pyrénées"); //L'expediteur du mail
+$mail->SetFrom(FROM_EMAIL, "Ville de Pau"); //L'expediteur du mail
 $mail->AddReplyTo("NO-REPLY@agglo-pau.fr", "NO REPLY"); //Pour que l'usager réponde au mail
 //mail du destinataire
 $mail->AddAddress($email); 
