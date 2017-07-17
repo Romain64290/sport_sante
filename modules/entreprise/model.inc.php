@@ -464,7 +464,7 @@ unset($_SESSION['activite']);
   
  $result = $select->fetch();
  
- $recup_email=$result['email_estival_user'];
+ $recup_email=$result['email_entreprise_user'];
 
  return  $recup_email;
   

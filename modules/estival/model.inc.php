@@ -268,7 +268,7 @@ return $complet;
 			$heure_fin=explode(":",$heure_fin[1]);
 			$heure_fin=$heure_fin[0]."h".$heure_fin[1];
 
-			$reservation.=	"<li>$titre_estival_activite le $jour_activite de $heure_debut à $heure_fin - $lieu_estival_activite  </b><a href=\"$lien_map\" target=\"_blank\"> (voir l'adresse sur Google Map)</a> - [<a href=\"".URL_SITE."/modules/estival/validation_desinscription.php?id_user=$id_user&id_activite=$id_estival_activite&email=$email\">Se désinscrire</a>]</li>";
+			$reservation.=	"<li>$titre_estival_activite le $jour_activite de $heure_debut à $heure_fin - $lieu_estival_activite <a href=\"$lien_map\" target=\"_blank\"> (voir l'adresse sur Google Map)</a> - [<a href=\"".URL_SITE."/modules/estival/validation_desinscription.php?id_user=$id_user&id_activite=$id_estival_activite&email=$email\">Se désinscrire</a>]</li>";
 			
 		} 
 	   
