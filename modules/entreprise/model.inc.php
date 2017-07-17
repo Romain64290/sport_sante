@@ -398,6 +398,7 @@ function envoiMailConfirmation($id_user,$activite,$mail_user)
 $mail = new PHPMailer();
 // Encodage
 $mail->CharSet = 'UTF-8';
+$mail->Encoding = 'base64'; 
 
 
 //=====Corps du message

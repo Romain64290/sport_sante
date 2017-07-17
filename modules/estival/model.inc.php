@@ -351,6 +351,7 @@ function envoiMailConfirmation($id_user,$activite,$mail_user)
 $mail = new PHPMailer();
 // Encodage
 $mail->CharSet = 'UTF-8';
+$mail->Encoding = 'base64';
 
 //$mail->Host = '192.168.1.227';  // Specify main and backup SMTP servers
 //$mail->SMTPAuth = true;                               // Enable SMTP authentication
