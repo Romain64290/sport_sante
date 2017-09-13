@@ -891,4 +891,69 @@ $select->execute();
   
 }
 
+
+
+ /*******************************************************
+ * Envoi email de confirmation d'inscription 
+********************************************************/ 
+
+function envoiEmailNewuser($email,$motdepasse)
+{
+
+// Création d'un nouvel objet $mail
+$mail = new PHPMailer();
+// Encodage
+$mail->CharSet = 'UTF-8';
+$mail->Encoding = 'base64';
+
+//$mail->Host = '192.168.1.227';  // Specify main and backup SMTP servers
+//$mail->SMTPAuth = true;                               // Enable SMTP authentication
+//$mail->Username = 'therassonkonan@gmail.com';                 // SMTP username  'info@visionautoecole.ci';
+//$mail->Password = 'ther@sson1';                           // SMTP password
+//$mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
+//$mail->Port = 25;                                    // TCP port to connect to
+
+
+//=====Corps du message
+$body = "<html><head></head>
+<body>
+Bonjour,<br>
+<br>
+Nous vous confirmons votre inscription au dispositif \"En forme à Pau\": <br>
+Pour vous connecter à votre espace de reservation d'activités, veuillez tapez l'adresse suivante : <a href=\"https://efapau2.agglo-pau.fr\">https://efapau2.agglo-pau.fr</a><br>
+Saisissez les identifiants suivants: <br>
+<ul>
+<li><b>Email :</b> $email </li>
+<li><b>Mot de passe :</b> $motdepasse <br></li>
+</ul>
+Une fois connecté, vous pourrez personnaliser votre mot de passe<br>
+Ce compte personnel vous permet également de vous désinscrire des activités réservées.<br><br>
+La Ville de Pau vous remercie de votre participation. 
+</body>
+</html>";
+//==========
+
+
+// Expediteur, adresse de retour et destinataire :
+$mail->SetFrom(FROM_EMAIL, "Ville de Pau"); //L'expediteur du mail
+$mail->AddReplyTo("NO-REPLY@agglo-pau.fr", "NO REPLY"); //Pour que l'usager réponde au mail
+// Si on a le nom : $mail->AddAddress("romain_taldu@hotmail.com", "Romain perso"); 
+ //mail du destinataire
+$mail->AddAddress($email); 
+
+
+// Sujet du mail
+$mail->Subject = "Ville de Pau - En forme à Pau";
+// Le message
+$mail->MsgHTML($body);
+
+
+// Envoi de l'email
+$mail->Send();
+
+unset($mail);
+
+
+}
+
 }

@@ -94,7 +94,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
            
             <div class="row">
             
-             <div class="col-md-2">
+             <div class="col-md-3">
            
              	
                 <div class="form-group has-feedback">
@@ -121,7 +121,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
   
      </div> </div>     
           
-           <div class="col-md-5">
+           <div class="col-md-4">
           <div class="form-group has-feedback">
  	 <div class="input-group">
     <span class="input-group-addon">

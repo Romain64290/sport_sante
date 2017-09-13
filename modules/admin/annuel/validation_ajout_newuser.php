@@ -6,6 +6,7 @@
 require(__DIR__ .'/../../../include/verif_session.php');
 require(__DIR__ .'/../../../include/config.inc.php');
 require(__DIR__ .'/../../../include/connexion.inc.php');
+require(__DIR__ .'/../../../plugins/PHPMailer/class.phpmailer.php');
 require(__DIR__ .'/model.inc.php');
 
 $menu=3;
@@ -31,10 +32,12 @@ $motdepasse=random(8);
 $motdepasse_crypte=sha1($motdepasse);
 
 
-
+// Ajout du nouvel utilisateur dans la base de données.
 $result=$annuel->ajoutNewuser($_POST['civilite'],$_POST['nom'],$_POST['prenom'],$_POST['telephone'],$_POST['email'],$_POST['residence'],$_POST['naissance'],$accepte,$motdepasse_crypte);
 
-
+if($result){
+ $envoi_email_conformation=$annuel->envoiEmailNewuser($_POST['email'],$motdepasse);
+}
 
 
 ?>
