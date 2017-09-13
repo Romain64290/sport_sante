@@ -1021,4 +1021,549 @@ $detail_direction=" <ul>
    
 } 
 
+/*----------------------------- SECTION ANNUEL------------------------------
+ * -------------------------------------------------------------------------
+ * ------------------------------------------------------------------------
+ */
+
+
+/***********************************************************************
+ * Fonction calcul du nombre d'activite
+ **************************************************************************/
+  
+ function afficheNbreActivitesAnnuel($annee)
+  {
+   
+ $annee="%".$annee."%";  
+   
+	try{
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+FROM annuel_activite
+WHERE start_annuel_activite LIKE :date');
+
+$select->bindParam(':date', $annee, PDO::PARAM_STR);	
+
+$select->execute();
+	}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul du nombre d'activite </b>\n";
+	throw $e;
+        exit;
+    }
+
+$result = $select->fetch();
+
+$quantite=$result['nbr'];
+		
+	      echo $quantite;
+      
+   
+}
+
+/***********************************************************************
+ * Fonction calcul du nombre de particpants
+ **************************************************************************/
+  
+ function afficheNbreParticipantsAnnuel($annee)
+  {
+
+ $annee="%".$annee."%";
+
+	try{
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+FROM membres
+WHERE date_inscription LIKE :date AND id_typemembre=1');
+
+$select->bindParam(':date', $annee, PDO::PARAM_STR);
+
+$select->execute();
+	}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul du nombre de particpants </b>\n";
+	throw $e;
+        exit;
+    }
+
+$result = $select->fetch();
+
+$quantite=$result['nbr'];
+		
+	      echo $quantite;
+      
+   
+}
+
+
+
+
+/***********************************************************************
+ * Fonction calcul du nombre de particpations
+ **************************************************************************/
+  
+ function afficheNbreParticipationsAnnuel($annee)
+  {
+   
+  $annee="%".$annee."%";
+    
+	try{
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+FROM annuel_user_has_activite
+INNER JOIN membres ON membres.id_membre=annuel_user_has_activite.id_membre
+INNER JOIN annuel_activite ON annuel_activite.id_annuel_activite=annuel_user_has_activite.id_annuel_activite
+WHERE start_annuel_activite LIKE :date');
+
+$select->bindParam(':date', $annee, PDO::PARAM_STR);	
+
+$select->execute();
+	}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul du nombre de particpations </b>\n";
+	throw $e;
+        exit;
+    }
+
+$result = $select->fetch();
+
+$quantite=$result['nbr'];
+		
+	      echo $quantite;
+      
+   
+}
+  
+  /***********************************************************************
+ * Fonction calcul moyenne d'age
+ **************************************************************************/
+  
+ function afficheMoyenneAgeAnnuel($annee)
+  {
+   
+ $annee="%".$annee."%";
+ 
+// nombre de participants
+try{	
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+FROM membres
+WHERE date_inscription LIKE :date AND id_typemembre=1');
+
+$select->bindParam(':date', $annee, PDO::PARAM_STR);	
+
+$select->execute();
+	}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul moyenne d'age </b>\n";
+	throw $e;
+        exit;
+    }
+$result = $select->fetch();
+
+// additionne l'age total
+try{
+$select2 = $this->con->prepare('SELECT age '
+        . 'FROM membres '
+        . 'WHERE date_inscription LIKE :date AND id_typemembre=1');
+
+$select2->bindParam(':date', $annee, PDO::PARAM_STR);	
+
+$select2->execute();
+	}
+	 catch (PDOException $f){
+       echo $f->getMessage() . " <br><b>Erreur lors du calcul  moyenne d'age </b>\n";
+	throw $f;
+        exit;
+    }
+
+$total_age=0;
+
+$data = $select2->fetchAll(PDO::FETCH_OBJ);	
+
+
+foreach($data as $key){
+			
+			
+$naissance=$key->age;
+		
+			
+//Calcul de l'age
+$arr1 = explode('/', $naissance);
+$arr2 = explode('/', date('d/m/Y'));
+if(($arr1[1] < $arr2[1]) || (($arr1[1] == $arr2[1]) && ($arr1[0] <= $arr2[0])))
+{$age=$arr2[2] - $arr1[2];} else{$age=$arr2[2] - $arr1[2] - 1;}
+
+$total_age=$total_age+$age;
+	 }
+
+
+$total_user=$result['nbr'];
+
+
+if($total_user!=0){$quantite=round($total_age/$total_user);}else{$quantite=0;}
+		
+ echo $quantite;
+      
+   
+}  
+  
+  
+  
+ /***********************************************************************
+ * Fonction calcul pourcentage de femmes
+ **************************************************************************/
+  
+ function afficheRatioFemmesAnnuel($annee)
+  {
+   
+ $annee="%".$annee."%";
+ 
+// nombre de participants	
+try{
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+FROM membres
+WHERE date_inscription LIKE :date AND id_typemembre=1');
+
+$select->bindParam(':date', $annee, PDO::PARAM_STR);	
+
+$select->execute();
+	}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul pourcentage de femmes</b>\n";
+	throw $e;
+        exit;
+    }
+$result = $select->fetch();
+
+// nombre de femmes
+try{
+$select2 = $this->con->prepare('SELECT COUNT(*) as nbr '
+        . 'FROM membres'
+        . ' WHERE civilite=2 AND date_inscription LIKE :date AND id_typemembre=1');
+
+$select2->bindParam(':date', $annee, PDO::PARAM_STR);
+
+$select2->execute();
+	}
+	 catch (PDOException $f){
+       echo $f->getMessage() . " <br><b>Erreur lors du calcul pourcentage de femmes</b>\n";
+	throw $f;
+        exit;
+    }
+
+$result2 = $select2->fetch();
+
+$total_user=$result['nbr'];
+$total_femme=$result2['nbr'];
+
+if($total_user!=0){$quantite=round($total_femme/$total_user*100);}else{$quantite=0;}
+		
+	      echo $quantite;
+      
+   
+} 
+
+
+/***********************************************************************
+ * Fonction repartition par ville
+ **************************************************************************/
+//  resultat attendu ex : 50, 70, 15
+//recuprer le total, pau et autre , en deduire qte agglo
+
+ function afficheRepartitionVilleAnnuel($annee)
+  {
+    
+  $annee="%".$annee."%";
+
+// nombre de participants, donc le total communes
+	try{	
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+FROM membres
+WHERE date_inscription LIKE :date AND id_typemembre=1');
+
+$select->bindParam(':date', $annee, PDO::PARAM_STR);
+
+$select->execute();
+		}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul nombre de participants, donc le total communes</b>\n";
+	throw $e;
+        exit;
+    }
+	 
+$result = $select->fetch();
+$total_communes=$result['nbr'];
+
+// nombre de participants venant de pau	
+	try{
+$select2 = $this->con->prepare('SELECT COUNT(*) as nbr '
+        . 'FROM membres '
+        . 'WHERE residence LIKE "pau" AND date_inscription LIKE :date AND id_typemembre=1');
+$select2->bindParam(':date', $annee, PDO::PARAM_STR);
+$select2->execute();
+		}
+	 catch (PDOException $f){
+       echo $f->getMessage() . " <br><b>Erreur lors du calcul nombre de participants venant de pau	</b>\n";
+	throw $f;
+        exit;
+    }
+
+$result2 = $select2->fetch();
+$total_pau=$result2['nbr'];
+
+// nombre de participants venant de l'extérieur de l'agglo
+	try{
+$select3 = $this->con->prepare('SELECT COUNT(*) as nbr '
+        . 'FROM membres '
+        . 'WHERE residence LIKE "autre" AND date_inscription LIKE :date AND id_typemembre=1');
+$select3->bindParam(':date', $annee, PDO::PARAM_STR);
+$select3->execute();
+		}
+	 catch (PDOException $g){
+       echo $g->getMessage() . " <br><b>Erreur lors du calcul nombre de participants venant de l'extérieur de l'agglo</b>\n";
+	throw $g;
+        exit;
+    }
+
+$result3 = $select3->fetch();
+$total_autre=$result3['nbr'];
+
+$total_agglo=$total_communes-$total_pau-$total_autre;
+
+$repartition="$total_pau, $total_agglo, $total_autre";
+      
+echo $repartition;   
+}    
+
+
+
+
+   /***********************************************************************
+ * Affiche de détail par ville 
+ **************************************************************************/
+/* resultat attendu :  
+ * 
+		<li>Artigueloutan : 12</li>
+      	<li>Billère : 23</li>
+      	<li>Bizanos : 14</li>
+      	<li>Gan : 7</li>
+      	<li>Gelos : 2</li>
+      	<li>Idron : 18</li>
+      	<li>Jurançon : 21</li>
+      	<li>Léé : 1</li>
+      	<li>Lescar : 33</li>
+      	<li>Lons : 28</li>
+      	<li>Mazères-Lezons :7</li>
+      	<li>Ousse : 4</li>
+      	<li>Pau : 222</li>
+      	<li>Sendets : 6</li>
+      	<li>_Autre : 5</li>
+*/
+ function afficheDetailvilleAnnuel($annee)
+  {
+    
+  $annee="%".$annee."%";
+
+$artigueloutan=0;
+$billere=0;
+$bizanos=0;
+$gan=0;
+$gelos=0;
+$idron=0;
+$jurancon=0;
+$lee=0;
+$lescar=0;
+$lons=0;
+$mazeres_lezons=0;
+$ousse=0;
+$pau=0;
+$sendets=0;
+$autre=0;
+
+
+// recupere les communes de tous les participants
+	try{
+$select = $this->con->prepare('SELECT residence
+FROM membres
+WHERE date_inscription LIKE :date AND id_typemembre=1');
+
+$select->bindParam(':date', $annee, PDO::PARAM_STR);
+
+$select->execute();
+		}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors de la recuperation de tous les participants des communes</b>\n";
+	throw $e;
+        exit;
+    }
+
+$data = $select->fetchAll(PDO::FETCH_OBJ);	
+
+foreach($data as $key){
+			
+$commune=$key->residence;
+		
+		
+
+//swith case qui incremente les variables de communes
+switch ($commune) 
+{ 
+    case $commune =="artigueloutan" : 
+    ++$artigueloutan;
+    break;
+	case $commune =="billere" : 
+    ++$billere;
+    break;
+	case $commune =="bizanos" : 
+    ++$bizanos;
+    break;
+	case $commune =="gan" : 
+    ++$gan;
+    break;
+	case $commune =="gelos" : 
+    ++$gelos;
+    break;
+	case $commune =="idron" : 
+    ++$idron;
+    break;
+	case $commune =="jurancon" : 
+    ++$jurancon;
+    break;
+	case $commune =="lee" : 
+    ++$lee;
+    break;
+	case $commune =="lescar" : 
+    ++$lescar;
+    break;
+	case $commune =="lons" : 
+    ++$lons;
+    break;
+	case $commune =="mazeres_lezons" : 
+    ++$mazeres_lezons;
+    break;
+	case $commune =="ousse" : 
+    ++$ousse;
+    break;
+	case $commune =="pau" : 
+    ++$pau;
+    break;
+	case $commune =="sendets" : 
+    ++$sendets;
+    break;
+	case $commune =="autre" : 
+    ++$autre;
+    break;
+	
+	
+}	
+
+	
+	 }
+
+
+$detail_communes="<li>Artigueloutan : $artigueloutan</li>
+      	<li>Billère : $billere</li>
+      	<li>Bizanos : $bizanos</li>
+      	<li>Gan : $gan</li>
+      	<li>Gelos : $gelos</li>
+      	<li>Idron : $idron</li>
+      	<li>Jurançon : $jurancon</li>
+      	<li>Léé : $lee</li>
+      	<li>Lescar : $lescar</li>
+      	<li>Lons : $lons</li>
+      	<li>Mazères-Lezons :$mazeres_lezons</li>
+      	<li>Ousse : $ousse</li>
+      	<li>Pau : $pau</li>
+      	<li>Sendets : $sendets</li>
+      	<li>_Autre : $autre</li>";
+		
+ echo $detail_communes;
+      
+   
+} 
+ 
+  
+ /***********************************************************************
+ * Fonction repartition par age
+ **************************************************************************/
+  
+//  resultat attendu ex : 5, 10, 15,20,30,20
+
+ function afficheRepartitionAgeAnnuel($annee)
+  {
+   
+ $annee="%".$annee."%";
+  
+$moinsde20=0;
+$vingtaine=0;
+$trentaine=0;
+$quarantaine=0;
+$cinquantaine=0;
+$plusde60=0;
+
+// recupere l'age de tous les participants
+	try{
+$select2 = $this->con->prepare('SELECT age 
+FROM membres
+WHERE date_inscription LIKE :date AND id_typemembre=1');
+
+$select2->bindParam(':date', $annee, PDO::PARAM_STR);
+
+$select2->execute();
+		}
+	 catch (PDOException $e){
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul de la Fonction repartition par age</b>\n";
+	throw $e;
+        exit;
+    }
+
+$data = $select2->fetchAll(PDO::FETCH_OBJ);	
+
+foreach($data as $key){
+			
+$naissance=$key->age;
+		
+			
+//Calcul de l'age
+$arr1 = explode('/', $naissance);
+$arr2 = explode('/', date('d/m/Y'));
+if(($arr1[1] < $arr2[1]) || (($arr1[1] == $arr2[1]) && ($arr1[0] <= $arr2[0])))
+{$age=$arr2[2] - $arr1[2];} else{$age=$arr2[2] - $arr1[2] - 1;}
+
+
+//swith case qui incremente les variables de repartition d'age
+switch ($age) 
+{ 
+    case $age < 20 : 
+    ++$moinsde20;
+    break;
+	case $age >= 20 and $age<30: 
+    ++$vingtaine;
+    break;
+	case $age >= 30 and $age<40: 
+    ++$trentaine;
+    break;
+	case $age >= 40 and $age<50: 
+    ++$quarantaine;
+    break;
+	case $age >= 50 and $age<60: 
+    ++$cinquantaine;
+    break;
+	case $age >= 60 : 
+    ++$plusde60;
+    break;
+	
+}	
+
+	
+	 }
+
+
+
+
+
+$repartition="$moinsde20, $vingtaine, $trentaine, $quarantaine, $cinquantaine, $plusde60";
+		
+ echo $repartition;
+      
+   
+}  
+
 }
