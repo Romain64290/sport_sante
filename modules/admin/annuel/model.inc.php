@@ -429,45 +429,6 @@ $select2->execute(array(
 }
 
 
-/***********************************************************************
- * Suppression d'un utilisateur
- **************************************************************************/
-  
- function suppUser($id_activite,$id_user)
-  {
- 
-
- 	try{  	
-$select = $this->con->prepare('DELETE 
-		FROM annuel_user_has_activite
-		WHERE id_annuel_activite  = :id_annuel_activite AND id_membre  = :id_membre');
-						
-$select->execute(array(
-		':id_annuel_activite' => $id_activite,
-		':id_membre' => $id_user,
-		));
-		 }
-  catch (PDOException $e){
-       echo $e->getMessage() . " <br><b>Erreur lors de Suppression d'un utilisateur</b>\n";
-	throw $e;
-        exit;
-    }
-		
-// decrementation du nombre de place de l'activite
-	try{
-$update = $this->con->prepare('UPDATE annuel_activite SET inscrit_annuel_activite = inscrit_annuel_activite - 1  WHERE id_annuel_activite  = :id_annuel_activite');
-$update->execute(array(
-':id_annuel_activite' => $id_activite
-		));
-		 }
-  catch (PDOException $f){
-       echo $f->getMessage() . " <br><b>Erreur lors de Suppression d'un utilisateur</b>\n";
-	throw $f;
-        exit;
-    }
-		
-}
-
 
 /***********************************************************************
  * Ajout d'un utilisateur à une activite par un admin

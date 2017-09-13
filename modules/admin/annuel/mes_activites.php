@@ -140,11 +140,22 @@ $compteur = 1;
 
 			$monactivite="$titre_annuel_activite le $jour_activite à $heure_debut";
 			$monactivitejs=addslashes($monactivite);
+                        
+                         $description_annuel_activite=htmlspecialchars($event->description_annuel_activite);
+			$description_annuel_activite = str_replace(array("\r\n", "\r", "\n"), "<br>", $description_annuel_activite); 
+                        $description_annuel_activitejs=addslashes($description_annuel_activite);
+			
+			$lieu_annuel_activite=htmlspecialchars($event->lieu_annuel_activite);
+                        $lieu_annuel_activitejs=addslashes($lieu_annuel_activite);
+                        
+			$lieu_repli_annuel_activite=htmlspecialchars($event->lieu_repli_annuel_activite);
+                        $lieu_repli_annuel_activitejs=addslashes($lieu_repli_annuel_activite);
  
 echo"
 <tr>
             <td style=\"width: 5%; text-align: left\">$compteur</td>
-            <td style=\"width: 95%; text-align: left\"><a href=\"#\" onclick=\"suppActivite($id_activite,new String('$monactivitejs'));\">$monactivite  &nbsp;&nbsp;<span class=\"label label-danger\"><i class=\"fa fa-trash-o\"></i>&nbsp;Supp.</span></a></td> </tr>";
+            <td style=\"width: 95%; text-align: left\"><a href=\"#\" onclick=\"detailActivite(new String('$monactivitejs'),new String('$description_annuel_activitejs'),new String('$lieu_annuel_activitejs'),new String('$lieu_repli_annuel_activitejs'));\">$monactivite </a> &nbsp;&nbsp;"
+        . "<a href=\"#\" onclick=\"suppActivite($id_activite,new String('$monactivitejs'));\"><span class=\"label label-danger\"><i class=\"fa fa-trash-o\"></i>&nbsp;Supp.</span></a></td> </tr>";
 			
 			$compteur++;	
     }
@@ -213,6 +224,8 @@ $compteur = 1;
 			$heure_debut=explode(" ",$start_annuel_activite);
 			$heure_debut=explode(":",$heure_debut[1]);
 			$heure_debut=$heure_debut[0]."h".$heure_debut[1];
+                        
+                       
 	
 
 echo"
@@ -350,7 +363,19 @@ swal(
 })
     
  }         
-      
+     
+     
+  function detailActivite(activite,description,lieu,repli) {
+  	  
+  swal({
+  title: ""+activite,
+  html: "<div align=\"left\"><b>Description : </b>"+description+"<br><br><b>Lieu : </b>"+lieu+"<br><br><b>Lieu de repli : </b>"+repli+"</div>",
+  type: 'info'
+}).then(function () {
+ document.location.href="supp_monactivite.php?id_activite="+idactivite;
+})
+    
+ }         
       
     </script>
  

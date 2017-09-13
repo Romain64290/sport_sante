@@ -16,7 +16,7 @@ $id_user=$_GET['id_user'];
 $connect = new connection();
 $annuel = new annuel($connect);
 
-$resultat=$annuel->suppUser($id_activite,$id_user);
+$resultat=$annuel->suppMonActivite($id_activite,$id_user);
 
 if($origine=="recherche"){
 header('Location: recherche_participant.php');
