@@ -74,7 +74,7 @@ $erreur = isset($_GET['erreur']) ? $_GET['erreur'] : NULL;
         </form>
         <p>
         <a href="../modules/sessions/forget_pwd.php">J'ai oublié mon mot de passe</a><br>
-        <?php if(URL_SITE!="http://efapau2.agglo-pau.fr"){ ?> <a href="../modules/sessions/register.php" class="text-center">Je souhaite m'inscrire</a><br> <?php } ?>
+        <?php if(URL_SITE!="https://efapau2.agglo-pau.fr"){ ?> <a href="../modules/sessions/register.php" class="text-center">Je souhaite m'inscrire</a><br> <?php } ?>
         </p>
 	<p class="text-danger"><?php if($erreur==1){echo"Nom d'utilisateur ou mot de passe incorrect !";} ?></p>
       </div><!-- /.login-box-body -->

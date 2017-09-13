@@ -219,4 +219,107 @@ $data = $select->fetchAll(PDO::FETCH_OBJ);
 return $data;
     
  }  
+ 
+ 
+/***********************************************************************
+ * Affichage de tous les participants
+ **************************************************************************/
+  
+ function afficheTypeSignalements()
+  {
+   
+   try{
+$select = $this->con->prepare('SELECT *
+						FROM type_signalement
+						ORDER BY ordre_affichage ASC
+						');
+						
+$select->execute();
+	} 
+        
+        catch (Exception $e) {
+            echo $e->getMessage() . " <br><b>Erreur de l'Affichage des types de signalement</b>\n";
+            throw $e;
+        }	 
+
+
+$data = $select->fetchAll(PDO::FETCH_OBJ);	
+	 
+return $data;
+    
+ }
+
+/***********************************************************************
+ * Affichage d'un participant
+ **************************************************************************/
+  
+ function afficheTypeSugnalement($id)
+  {
+   
+   try{
+$select = $this->con->prepare('SELECT *
+						FROM type_signalement
+						WHERE id = :id
+						');
+						
+$select->execute(array(
+		':id' => $id
+		));
+
+
+	} 
+        
+        catch (Exception $e) {
+            echo $e->getMessage() . " <br><b>Erreur de l'Affichage d'un type de signalement</b>\n";
+            throw $e;
+        }	 
+
+
+$data = $select->fetchAll(PDO::FETCH_OBJ);	
+	 
+return $data;
+    
+ }  
+ 
+ 
+ /***********************************************************************
+ * Affichage d'un participant
+ **************************************************************************/
+  
+ function newSignalement($data)
+  {
+ 
+ $nom=$data[0]->nom; 
+ $prenom = $data[0]->prenom; 
+ $email=$data[0]->email; 
+ $type_signalement = $data[0]->type_signalement; 
+ $coordonnees=$data[0]->coordonnees; 
+ $photo = $data[0]->photo;
+ 
+     
+ 
+ try{
+	
+$insert = $this->con->prepare('INSERT INTO signalement (nom, prenom,email,type_signalement,coordonnees,photo)
+VALUES(:nom, :prenom,:email,:type_signalement,:coordonnees,:photo)');
+	
+$insert->bindParam(':nom', $nom, PDO::PARAM_STR);
+$insert->bindParam(':prenom', $prenom, PDO::PARAM_STR);
+$insert->bindParam(':email', $email, PDO::PARAM_STR);
+$insert->bindParam(':type_signalement', $type_signalement, PDO::PARAM_INT);
+$insert->bindParam(':coordonnees', $coordonnees, PDO::PARAM_STR);
+$insert->bindParam(':photo', $photo, PDO::PARAM_STR);
+$insert->execute();
+
+	}
+        catch (Exception $f) {
+            echo $f->getMessage() . " <br><b>Erreur lors de la creation d'une fiche de signalement</b>\n";
+            throw $f;
+        } 
+ 
+  }
+ 
+ 
+ 
+ 
 }
