@@ -245,13 +245,17 @@ if($total_user!=0){$quantite=round($total_femme/$total_user*100);}else{$quantite
  * Fonction calcul du nombre d'activite
  **************************************************************************/
   
- function afficheNbreActivitesEntreprise($annee)
+ function afficheNbreActivitesEntreprise($debut_scolaire,$fin_scolaire)
   {
  
-  $annee="%".$annee."%";
+
      
 	try{
-$select = $this->con->prepare('SELECT COUNT(*) as nbr FROM entreprise_activite');
+$select = $this->con->prepare('SELECT COUNT(*) as nbr '
+        . 'FROM entreprise_activite'
+        . ' WHERE start_entreprise_activite > :debut_scolaire AND start_entreprise_activite < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 	}
 	 catch (PDOException $e){
@@ -273,13 +277,18 @@ $quantite=$result['nbr'];
  * Fonction calcul du nombre de particpants - entreprsie
  **************************************************************************/
   
- function afficheNbreParticipantsEntreprise($annee)
+ function afficheNbreParticipantsEntreprise($debut_scolaire,$fin_scolaire)
   {
 
 
     
 	try{
-$select = $this->con->prepare('SELECT COUNT(*) as nbr FROM entreprise_user');
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+        FROM entreprise_user
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 	}
 	 catch (PDOException $e){
@@ -304,13 +313,16 @@ $quantite=$result['nbr'];
  * Fonction calcul du nombre de particpations - entreprise
  **************************************************************************/
   
- function afficheNbreParticipationsEntreprise($annee)
+ function afficheNbreParticipationsEntreprise($debut_scolaire,$fin_scolaire)
   {
  
-
-    
 	try{
-$select = $this->con->prepare('SELECT COUNT(*) as nbr FROM entreprise_user_has_activite');
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+        FROM entreprise_user_has_activite
+        INNER JOIN entreprise_activite ON entreprise_activite.id_entreprise_activite= entreprise_user_has_activite.id_entreprise_activite
+        WHERE start_entreprise_activite > :debut_scolaire AND start_entreprise_activite < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 	}
 	 catch (PDOException $e){
@@ -332,17 +344,21 @@ $quantite=$result['nbr'];
  * Fonction calcul moyenne d'age - entreprise
  **************************************************************************/
   
- function afficheMoyenneAgeEntreprise($annee)
+ function afficheMoyenneAgeEntreprise($debut_scolaire,$fin_scolaire)
   {
     
 
 // nombre de participants
 	try{	
-$select = $this->con->prepare('SELECT COUNT(*) as nbr FROM entreprise_user');
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+       FROM entreprise_user
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 	}
 	 catch (PDOException $e){
-       echo $e->getMessage() . " <br><b>Erreur lors du calcul moyenne d'age - entreprise</b>\n";
+       echo $e->getMessage() . " <br><b>Erreur lors du calcul moyenne d'age - entreprise1</b>\n";
 	throw $e;
         exit;
     }
@@ -351,11 +367,15 @@ $result = $select->fetch();
 
 // additionne l'age total
 	try{
-$select2 = $this->con->prepare('SELECT age_entreprise_user FROM entreprise_user');
+$select2 = $this->con->prepare('SELECT age_entreprise_user,date_inscription 
+        FROM entreprise_user
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select2->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select2->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select2->execute();
 	}
 	 catch (PDOException $f){
-       echo $f->getMessage() . " <br><b>Erreur lors du calcul moyenne d'age - entreprise</b>\n";
+       echo $f->getMessage() . " <br><b>Erreur lors du calcul moyenne d'age - entreprise2</b>\n";
 	throw $f;
         exit;
     }
@@ -397,13 +417,17 @@ if($total_user!=0){$quantite=round($total_age/$total_user);}else{$quantite=0;}
  * Fonction calcul pourcentage de femmes - entreprise
  **************************************************************************/
   
- function afficheRatioFemmesEntreprise($annee)
+ function afficheRatioFemmesEntreprise($debut_scolaire,$fin_scolaire)
   {
     
 
 // nombre de participants
 	try{	
-$select = $this->con->prepare('SELECT COUNT(*) as nbr FROM entreprise_user');
+$select = $this->con->prepare('SELECT COUNT(*) as nbr 
+        FROM entreprise_user
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 		}
 	 catch (PDOException $e){
@@ -416,7 +440,11 @@ $result = $select->fetch();
 
 // nombre de femmes
 	try{
-$select2 = $this->con->prepare('SELECT COUNT(*) as nbr FROM entreprise_user WHERE civilite_entreprise_user=2');
+$select2 = $this->con->prepare('SELECT COUNT(*) as nbr
+        FROM entreprise_user 
+        WHERE civilite_entreprise_user=2 AND date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select2->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select2->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select2->execute();
 		}
 	 catch (PDOException $f){
@@ -531,7 +559,7 @@ $repartition="$moinsde20, $vingtaine, $trentaine, $quarantaine, $cinquantaine, $
   
 //  resultat attendu ex : 5, 10, 15,20,30,20
 
- function afficheLieuTravail($annee)
+ function afficheLieuTravail($debut_scolaire,$fin_scolaire)
   {
    
 
@@ -544,7 +572,12 @@ $autre=0;
 
 // recupere du lieu de travail de tous les participants
 	try{
-$select2 = $this->con->prepare('SELECT lieu_travail FROM entreprise_user');
+$select2 = $this->con->prepare('SELECT lieu_travail,date_inscription
+        FROM entreprise_user
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+
+$select2->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select2->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select2->execute();
 		}
 	 catch (PDOException $e){
@@ -673,7 +706,7 @@ echo $repartition;
 //  resultat attendu ex : 50, 70, 15
 
 
- function afficheRepartitionDirection($annee)
+ function afficheRepartitionDirection($debut_scolaire,$fin_scolaire)
   {
    
 
@@ -683,7 +716,9 @@ echo $repartition;
 $select = $this->con->prepare('
 SELECT COUNT(*) as nbr FROM entreprise_user
 INNER JOIN entreprise_direction ON entreprise_direction.id_direction=entreprise_user.direction
-WHERE groupe =2');
+WHERE groupe =2 AND date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 		}
 	 catch (PDOException $e){
@@ -701,7 +736,9 @@ $dgs=$result['nbr'];
 $select = $this->con->prepare('
 SELECT COUNT(*) as nbr FROM entreprise_user
 INNER JOIN entreprise_direction ON entreprise_direction.id_direction=entreprise_user.direction
-WHERE groupe =3');
+WHERE groupe =3 AND date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 		}
 	 catch (PDOException $f){
@@ -718,7 +755,9 @@ $qualite_urbaine=$result['nbr'];
 $select = $this->con->prepare('
 SELECT COUNT(*) as nbr FROM entreprise_user
 INNER JOIN entreprise_direction ON entreprise_direction.id_direction=entreprise_user.direction
-WHERE groupe =4');
+WHERE groupe =4 AND date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 		}
 	 catch (PDOException $g){
@@ -736,7 +775,9 @@ $developpement_social=$result['nbr'];
 $select = $this->con->prepare('
 SELECT COUNT(*) as nbr FROM entreprise_user
 INNER JOIN entreprise_direction ON entreprise_direction.id_direction=entreprise_user.direction
-WHERE groupe =1');
+WHERE groupe =1 AND date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 		}
 	 catch (PDOException $h){
@@ -907,7 +948,7 @@ $detail_communes="<li>Artigueloutan : $artigueloutan</li>
  **************************************************************************/
 
  
- function afficheDetailDirection($annee)
+ function afficheDetailDirection($debut_scolaire,$fin_scolaire)
   {
     
 
@@ -919,7 +960,11 @@ $res21=0;$res22=0;$res23=0;$res24=0;$res25=0;$res26=0;$res27=0;
 
 // recupere les directions de tous les participants
 	try{
-$select = $this->con->prepare('SELECT direction FROM entreprise_user');
+$select = $this->con->prepare('SELECT direction,date_inscription
+        FROM entreprise_user
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire');
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 		}
 	 catch (PDOException $e){
@@ -1031,17 +1076,18 @@ $detail_direction=" <ul>
  * Fonction calcul du nombre d'activite
  **************************************************************************/
   
- function afficheNbreActivitesAnnuel($annee)
+ function afficheNbreActivitesAnnuel($debut_scolaire,$fin_scolaire)
   {
    
- $annee="%".$annee."%";  
+ 
    
 	try{
 $select = $this->con->prepare('SELECT COUNT(*) as nbr 
 FROM annuel_activite
-WHERE start_annuel_activite LIKE :date');
+WHERE start_annuel_activite > :debut_scolaire AND start_annuel_activite < :fin_scolaire');
 
-$select->bindParam(':date', $annee, PDO::PARAM_STR);	
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);	
 
 $select->execute();
 	}
@@ -1064,17 +1110,18 @@ $quantite=$result['nbr'];
  * Fonction calcul du nombre de particpants
  **************************************************************************/
   
- function afficheNbreParticipantsAnnuel($annee)
+ function afficheNbreParticipantsAnnuel($debut_scolaire,$fin_scolaire)
   {
 
- $annee="%".$annee."%";
+
 
 	try{
 $select = $this->con->prepare('SELECT COUNT(*) as nbr 
 FROM membres
-WHERE date_inscription LIKE :date AND id_typemembre=1');
+WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND id_typemembre=1');
 
-$select->bindParam(':date', $annee, PDO::PARAM_STR);
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 
 $select->execute();
 	}
@@ -1100,19 +1147,19 @@ $quantite=$result['nbr'];
  * Fonction calcul du nombre de particpations
  **************************************************************************/
   
- function afficheNbreParticipationsAnnuel($annee)
+ function afficheNbreParticipationsAnnuel($debut_scolaire,$fin_scolaire)
   {
    
-  $annee="%".$annee."%";
     
 	try{
 $select = $this->con->prepare('SELECT COUNT(*) as nbr 
 FROM annuel_user_has_activite
 INNER JOIN membres ON membres.id_membre=annuel_user_has_activite.id_membre
 INNER JOIN annuel_activite ON annuel_activite.id_annuel_activite=annuel_user_has_activite.id_annuel_activite
-WHERE start_annuel_activite LIKE :date');
+WHERE start_annuel_activite > :debut_scolaire AND start_annuel_activite < :fin_scolaire');
 
-$select->bindParam(':date', $annee, PDO::PARAM_STR);	
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);	
 
 $select->execute();
 	}
@@ -1135,18 +1182,19 @@ $quantite=$result['nbr'];
  * Fonction calcul moyenne d'age
  **************************************************************************/
   
- function afficheMoyenneAgeAnnuel($annee)
+ function afficheMoyenneAgeAnnuel($debut_scolaire,$fin_scolaire)
   {
    
- $annee="%".$annee."%";
+
  
 // nombre de participants
 try{	
 $select = $this->con->prepare('SELECT COUNT(*) as nbr 
 FROM membres
-WHERE date_inscription LIKE :date AND id_typemembre=1');
+WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND id_typemembre=1');
 
-$select->bindParam(':date', $annee, PDO::PARAM_STR);	
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);	
 
 $select->execute();
 	}
@@ -1159,12 +1207,12 @@ $result = $select->fetch();
 
 // additionne l'age total
 try{
-$select2 = $this->con->prepare('SELECT age '
-        . 'FROM membres '
-        . 'WHERE date_inscription LIKE :date AND id_typemembre=1');
+$select2 = $this->con->prepare('SELECT age
+        FROM membres
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND id_typemembre=1');
 
-$select2->bindParam(':date', $annee, PDO::PARAM_STR);	
-
+$select2->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select2->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select2->execute();
 	}
 	 catch (PDOException $f){
@@ -1210,19 +1258,18 @@ if($total_user!=0){$quantite=round($total_age/$total_user);}else{$quantite=0;}
  * Fonction calcul pourcentage de femmes
  **************************************************************************/
   
- function afficheRatioFemmesAnnuel($annee)
+ function afficheRatioFemmesAnnuel($debut_scolaire,$fin_scolaire)
   {
    
- $annee="%".$annee."%";
  
 // nombre de participants	
 try{
 $select = $this->con->prepare('SELECT COUNT(*) as nbr 
 FROM membres
-WHERE date_inscription LIKE :date AND id_typemembre=1');
+WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND id_typemembre=1');
 
-$select->bindParam(':date', $annee, PDO::PARAM_STR);	
-
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select->execute();
 	}
 	 catch (PDOException $e){
@@ -1234,11 +1281,12 @@ $result = $select->fetch();
 
 // nombre de femmes
 try{
-$select2 = $this->con->prepare('SELECT COUNT(*) as nbr '
-        . 'FROM membres'
-        . ' WHERE civilite=2 AND date_inscription LIKE :date AND id_typemembre=1');
+$select2 = $this->con->prepare('SELECT COUNT(*) as nbr
+        FROM membres
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND civilite=2  AND id_typemembre=1');
 
-$select2->bindParam(':date', $annee, PDO::PARAM_STR);
+$select2->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select2->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 
 $select2->execute();
 	}
@@ -1267,18 +1315,19 @@ if($total_user!=0){$quantite=round($total_femme/$total_user*100);}else{$quantite
 //  resultat attendu ex : 50, 70, 15
 //recuprer le total, pau et autre , en deduire qte agglo
 
- function afficheRepartitionVilleAnnuel($annee)
+ function afficheRepartitionVilleAnnuel($debut_scolaire,$fin_scolaire)
   {
     
-  $annee="%".$annee."%";
+ 
 
 // nombre de participants, donc le total communes
 	try{	
 $select = $this->con->prepare('SELECT COUNT(*) as nbr 
 FROM membres
-WHERE date_inscription LIKE :date AND id_typemembre=1');
+WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND id_typemembre=1');
 
-$select->bindParam(':date', $annee, PDO::PARAM_STR);
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 
 $select->execute();
 		}
@@ -1293,10 +1342,11 @@ $total_communes=$result['nbr'];
 
 // nombre de participants venant de pau	
 	try{
-$select2 = $this->con->prepare('SELECT COUNT(*) as nbr '
-        . 'FROM membres '
-        . 'WHERE residence LIKE "pau" AND date_inscription LIKE :date AND id_typemembre=1');
-$select2->bindParam(':date', $annee, PDO::PARAM_STR);
+$select2 = $this->con->prepare('SELECT COUNT(*) as nbr 
+        FROM membres 
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND residence LIKE "pau" AND id_typemembre=1');
+$select2->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select2->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select2->execute();
 		}
 	 catch (PDOException $f){
@@ -1310,10 +1360,11 @@ $total_pau=$result2['nbr'];
 
 // nombre de participants venant de l'extérieur de l'agglo
 	try{
-$select3 = $this->con->prepare('SELECT COUNT(*) as nbr '
-        . 'FROM membres '
-        . 'WHERE residence LIKE "autre" AND date_inscription LIKE :date AND id_typemembre=1');
-$select3->bindParam(':date', $annee, PDO::PARAM_STR);
+$select3 = $this->con->prepare('SELECT COUNT(*) as nbr
+        FROM membres
+        WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND residence LIKE "autre"  AND id_typemembre=1');
+$select3->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select3->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 $select3->execute();
 		}
 	 catch (PDOException $g){
@@ -1356,11 +1407,9 @@ echo $repartition;
       	<li>Sendets : 6</li>
       	<li>_Autre : 5</li>
 */
- function afficheDetailvilleAnnuel($annee)
+ function afficheDetailvilleAnnuel($debut_scolaire,$fin_scolaire)
   {
     
-  $annee="%".$annee."%";
-
 $artigueloutan=0;
 $billere=0;
 $bizanos=0;
@@ -1382,9 +1431,10 @@ $autre=0;
 	try{
 $select = $this->con->prepare('SELECT residence
 FROM membres
-WHERE date_inscription LIKE :date AND id_typemembre=1');
+WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND id_typemembre=1');
 
-$select->bindParam(':date', $annee, PDO::PARAM_STR);
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 
 $select->execute();
 		}
@@ -1486,10 +1536,9 @@ $detail_communes="<li>Artigueloutan : $artigueloutan</li>
   
 //  resultat attendu ex : 5, 10, 15,20,30,20
 
- function afficheRepartitionAgeAnnuel($annee)
+ function afficheRepartitionAgeAnnuel($debut_scolaire,$fin_scolaire)
   {
    
- $annee="%".$annee."%";
   
 $moinsde20=0;
 $vingtaine=0;
@@ -1502,9 +1551,10 @@ $plusde60=0;
 	try{
 $select2 = $this->con->prepare('SELECT age 
 FROM membres
-WHERE date_inscription LIKE :date AND id_typemembre=1');
+WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire AND id_typemembre=1');
 
-$select2->bindParam(':date', $annee, PDO::PARAM_STR);
+$select2->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select2->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);
 
 $select2->execute();
 		}

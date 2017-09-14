@@ -17,6 +17,11 @@ include("../../../include/verif_droits.php");
 $connect = new connection();
 $entreprise = new entreprise($connect);
 
+ $jour_annee=date("z");
+ if ($jour_annee <182){$annee_scolaire=date("Y-1");}else{$annee_scolaire=date("Y");}
+ 
+$debut_scolaire=date("Y-m-d H:i:s", mktime(0, 0, 0, 7, 1, $annee_scolaire));
+$fin_scolaire=date("Y-m-d H:i:s", mktime(0, 0, 0, 6, 30, $annee_scolaire+1));
 
 ?>
 
@@ -108,7 +113,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                   
 <?php 
 
-$data=$entreprise->afficheTousUser(); 
+$data=$entreprise->afficheTousUser($debut_scolaire,$fin_scolaire); 
 
 $compteur = 1;
 

@@ -14,6 +14,12 @@ require(__DIR__ .'/model.inc.php');
 $connect = new connection();
 $annuel = new annuel($connect);
 
+ $jour_annee=date("z");
+ if ($jour_annee <182){$annee_scolaire=date("Y-1");}else{$annee_scolaire=date("Y");}
+ 
+$debut_scolaire=date("Y-m-d H:i:s", mktime(0, 0, 0, 7, 1, $annee_scolaire));
+$fin_scolaire=date("Y-m-d H:i:s", mktime(0, 0, 0, 6, 30, $annee_scolaire+1));
+
 ?>
 
 <!DOCTYPE html>
@@ -108,7 +114,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                   
 <?php
 
-$data=$annuel->afficheMembreAnnuel(); 
+$data=$annuel->afficheMembreAnnuel($debut_scolaire,$fin_scolaire); 
 
 
 $compteur = 1;

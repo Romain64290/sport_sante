@@ -22,9 +22,39 @@ $dashboard = new dashboard($connect);
 // verifie si l'annee des stats est selectionné ou pas
 $annee_civile = empty($_POST['annee_civile']) ? date("Y") : $_POST['annee_civile'];
 
-//Les années des entreprises sont decalées ex 2016/2017. la valeur est la premiere des dates : ici 2016. 
-//La bascule se faire au 30 juillet.
-$annee_scolaire = empty($_POST['annee_scolaire']) ? date("Y") : $_POST['annee_scolaire'] ;
+
+// stats annuel
+if(empty($_POST['annee_scolaire']))
+{
+    $jour_annee=date("z");
+    if ($jour_annee <182){$annee_scolaire=date("Y-1");}else{$annee_scolaire=date("Y");}
+    
+} else{
+$annee_scolaire=$_POST['annee_scolaire'];   
+}
+
+
+$debut_scolaire=date("Y-m-d H:i:s", mktime(0, 0, 0, 7, 1, $annee_scolaire));
+$fin_scolaire=date("Y-m-d H:i:s", mktime(0, 0, 0, 6, 30, $annee_scolaire+1));
+
+
+
+//////////// stats entreprises
+if(empty($_POST['annee_scolaire2']))
+{
+    $jour_annee=date("z");
+    if ($jour_annee <182){$annee_scolaire2=date("Y-1");}else{$annee_scolaire2=date("Y");}
+    
+} else{
+$annee_scolaire2=$_POST['annee_scolaire2'];   
+}
+
+
+$debut_scolaire2=date("Y-m-d H:i:s", mktime(0, 0, 0, 7, 1, $annee_scolaire2));
+$fin_scolaire2=date("Y-m-d H:i:s", mktime(0, 0, 0, 6, 30, $annee_scolaire2+1));
+
+
+
 
 ?>
 
@@ -290,9 +320,10 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
  <span class="input-group-addon">
     <span class="fa fa-pie-chart"></span>
  	 </span>
-           	 <select name="annee_civile" class="form-control" onchange="this.form.submit()">
-                <option value="2017" <?php if ($annee_civile ==2017){echo "selected";} ?> >Saison : 2017/2018</option>
-                <option value="2018" <?php if ($annee_civile ==2018){echo "selected";} ?> >Saison : 2018/2019</option>
+           	 <select name="annee_scolaire" class="form-control" onchange="this.form.submit()">
+                <option value="2016" <?php if ($annee_scolaire ==2016){echo "selected";} ?> >Saison : 2016/2017</option>
+                <option value="2017" <?php if ($annee_scolaire ==2017){echo "selected";} ?> >Saison : 2017/2018</option>
+                <option value="2018" <?php if ($annee_scolaire ==2018){echo "selected";} ?> >Saison : 2018/2019</option>
             </select>            
         
      </div>  </div>  
@@ -309,7 +340,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	<span class="info-box-icon bg-red"><i class="fa fa-heartbeat"></i></span>
                      <br>
                      <span class="description-text">Activités</span>
-                        <h5 class="description-header"><?php $dashboard->afficheNbreActivitesAnnuel($annee_scolaire);?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheNbreActivitesAnnuel($debut_scolaire,$fin_scolaire);?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -320,7 +351,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	 <span class="info-box-icon bg-aqua"><i class="ion ion-ios-people-outline"></i></span>
                      <br>
                      <span class="description-text">PARTICIPANTS</span>
-                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipantsAnnuel($annee_scolaire);?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipantsAnnuel($debut_scolaire,$fin_scolaire);?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -332,7 +363,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       <span class="info-box-icon bg-aqua"><i class="ion ion-ios-people-outline"></i></span>
                      <br>
                      <span class="description-text">Participations</span>
-                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipationsAnnuel($annee_scolaire);?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipationsAnnuel($debut_scolaire,$fin_scolaire);?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -343,7 +374,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	 <span class="info-box-icon bg-yellow"><i class="fa fa-birthday-cake"></i></span>
                      <br>
                      <span class="description-text">Moyenne d'age</span>
-                        <h5 class="description-header"><?php $dashboard->afficheMoyenneAgeAnnuel($annee_scolaire); ?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheMoyenneAgeAnnuel($debut_scolaire,$fin_scolaire); ?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -355,7 +386,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	 <span class="info-box-icon bg-green"><i class="fa fa-venus"></i></span>
                      <br>
                      <span class="description-text">% femmes</span>
-                        <h5 class="description-header"><?php $dashboard->afficheRatioFemmesAnnuel($annee_scolaire); ?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheRatioFemmesAnnuel($debut_scolaire,$fin_scolaire); ?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>
@@ -426,7 +457,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
     <div id="collapseOneAnnuel" class="collapse" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
       <ul>
-      	<?php $dashboard->afficheDetailvilleAnnuel($annee_scolaire);?>	
+      	<?php $dashboard->afficheDetailvilleAnnuel($debut_scolaire,$fin_scolaire);?>	
       </ul>
       </div>
     </div>
@@ -467,10 +498,10 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
  <span class="input-group-addon">
     <span class="fa fa-pie-chart"></span>
  	 </span>
-           	 <select name="annee_scolaire" class="form-control" onchange="this.form.submit()">
-                <option value="2016" <?php if ($annee_scolaire ==2016){echo "selected";} ?> >Saison : 2016/2017</option>
-                <option value="2017" <?php if ($annee_scolaire ==2017){echo "selected";} ?> >Saison : 2017/2018</option>
-                <option value="2018" <?php if ($annee_scolaire ==2018){echo "selected";} ?> >Saison: 2018/2019</option>
+           	 <select name="annee_scolaire2" class="form-control" onchange="this.form.submit()">
+                <option value="2016" <?php if ($annee_scolaire2 ==2016){echo "selected";} ?> >Saison : 2016/2017</option>
+                <option value="2017" <?php if ($annee_scolaire2 ==2017){echo "selected";} ?> >Saison : 2017/2018</option>
+                <option value="2018" <?php if ($annee_scolaire2 ==2018){echo "selected";} ?> >Saison: 2018/2019</option>
             </select>            
         
      </div>  </div>  
@@ -491,7 +522,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	<span class="info-box-icon bg-red"><i class="fa fa-heartbeat"></i></span>
                      <br>
                      <span class="description-text">Activités</span>
-                        <h5 class="description-header"><?php $dashboard->afficheNbreActivitesEntreprise($annee_scolaire);?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheNbreActivitesEntreprise($debut_scolaire2,$fin_scolaire2);?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -502,7 +533,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	 <span class="info-box-icon bg-aqua"><i class="ion ion-ios-people-outline"></i></span>
                      <br>
                      <span class="description-text">PARTICIPANTS</span>
-                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipantsEntreprise($annee_scolaire);?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipantsEntreprise($debut_scolaire2,$fin_scolaire2);?></h5>
                         <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -514,7 +545,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       <span class="info-box-icon bg-aqua"><i class="ion ion-ios-people-outline"></i></span>
                      <br>
                      <span class="description-text">Participations</span>
-                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipationsEntreprise($annee_scolaire);?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheNbreParticipationsEntreprise($debut_scolaire2,$fin_scolaire2);?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -525,7 +556,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	 <span class="info-box-icon bg-yellow"><i class="fa fa-birthday-cake"></i></span>
                      <br>
                      <span class="description-text">Moyenne d'age</span>
-                        <h5 class="description-header"><?php $dashboard->afficheMoyenneAgeEntreprise($annee_scolaire); ?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheMoyenneAgeEntreprise($debut_scolaire2,$fin_scolaire2); ?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>   </div>
@@ -537,7 +568,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                       	 <span class="info-box-icon bg-green"><i class="fa fa-venus"></i></span>
                      <br>
                      <span class="description-text">% femmes</span>
-                        <h5 class="description-header"><?php $dashboard->afficheRatioFemmesEntreprise($annee_scolaire); ?></h5>
+                        <h5 class="description-header"><?php $dashboard->afficheRatioFemmesEntreprise($debut_scolaire2,$fin_scolaire2); ?></h5>
                          <br>
                       </div><!-- /.description-block hauteur -->
                     </div>
@@ -610,7 +641,7 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
     <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
     	
       <div class="panel-body">
-      	<?php $dashboard->afficheDetailDirection($annee_scolaire);?>
+      	<?php $dashboard->afficheDetailDirection($debut_scolaire2,$fin_scolaire2);?>
 
      
       </div>
@@ -620,16 +651,11 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                 </div></div>   </div>    </div>    
 
 
-
-    
-     
-     
-     
      
      
     
                 </form>    
-                  
+                 
              </section><!-- /.content -->
       </div><!-- /.content-wrapper -->       
     
@@ -685,7 +711,7 @@ var myChart = new Chart(ctx, {
             ],
     datasets: [
         {
-            data: [<?php $dashboard->afficheRepartitionAgeAnnuel($annee_scolaire); ?>],
+            data: [<?php $dashboard->afficheRepartitionAgeAnnuel($debut_scolaire,$fin_scolaire); ?>],
             backgroundColor: [
                  "#FF6384",
                 "#00a65a",
@@ -717,7 +743,7 @@ var myChart = new Chart(ctx, {
             ],
     datasets: [
         {
-            data: [<?php $dashboard->afficheLieuTravail($annee_civile); ?>],
+            data: [<?php $dashboard->afficheLieuTravail($debut_scolaire2,$fin_scolaire2); ?>],
             backgroundColor: [
                  "#FF6384",
                 "#00a65a",
@@ -778,7 +804,7 @@ var myChart = new Chart(ctx, {
             ],
     datasets: [
         {
-            data: [<?php $dashboard->afficheRepartitionVilleAnnuel($annee_scolaire); ?>],
+            data: [<?php $dashboard->afficheRepartitionVilleAnnuel($debut_scolaire,$fin_scolaire); ?>],
             backgroundColor: [
                  "#FF6384",
                 "#00a65a",
@@ -813,7 +839,7 @@ var myChart = new Chart(ctx, {
             ],
     datasets: [
         {
-            data: [<?php $dashboard->afficheRepartitionDirection($annee_civile); ?>],
+            data: [<?php $dashboard->afficheRepartitionDirection($debut_scolaire2,$fin_scolaire2); ?>],
             backgroundColor: [
                  "#FF6384",
                 "#00a65a",

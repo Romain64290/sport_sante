@@ -18,6 +18,12 @@ $connect = new connection();
 $annuel = new annuel($connect);
 
 $success = empty($_GET['success']) ? "" : $_GET['success'];
+$id_user = empty($_GET['id_user']) ? "" : $_GET['id_user'];
+
+
+
+if($_SESSION['id_typemembre']==1){$membre=$_SESSION["id_membre"];}
+if($_SESSION['id_typemembre']==3 OR $_SESSION['id_typemembre']==4){$membre=$id_user;}
 
 ?>
 
@@ -118,7 +124,8 @@ require(__DIR__ .'/../../../include/main_slidebar.php');
                   
 <?php 
 
-$data=$annuel->afficheActiviteEncoursMembreAnnuel($_SESSION["id_membre"]); 
+
+$data=$annuel->afficheActiviteEncoursMembreAnnuel($membre); 
 
 
 $compteur = 1;
@@ -155,7 +162,7 @@ echo"
 <tr>
             <td style=\"width: 5%; text-align: left\">$compteur</td>
             <td style=\"width: 95%; text-align: left\"><a href=\"#\" onclick=\"detailActivite(new String('$monactivitejs'),new String('$description_annuel_activitejs'),new String('$lieu_annuel_activitejs'),new String('$lieu_repli_annuel_activitejs'));\">$monactivite </a> &nbsp;&nbsp;"
-        . "<a href=\"#\" onclick=\"suppActivite($id_activite,new String('$monactivitejs'));\"><span class=\"label label-danger\"><i class=\"fa fa-trash-o\"></i>&nbsp;Supp.</span></a></td> </tr>";
+        . "<a href=\"#\" onclick=\"suppActivite($id_activite,new String('$monactivitejs'),$membre);\"><span class=\"label label-danger\"><i class=\"fa fa-trash-o\"></i>&nbsp;Supp.</span></a></td> </tr>";
 			
 			$compteur++;	
     }
@@ -205,7 +212,7 @@ echo"
                   
 <?php 
 
-$data=$annuel->afficheActiviteHistoMembreAnnuel($_SESSION["id_membre"]); 
+$data=$annuel->afficheActiviteHistoMembreAnnuel($membre); 
 
 
 $compteur = 1;
@@ -347,7 +354,7 @@ swal(
           
       });
       
-  function suppActivite(idactivite,activite) {
+  function suppActivite(idactivite,activite,id_user) {
   	  
   swal({
   title: 'Etes vous sûr de vouloir supprimer cette activité ?',
@@ -359,7 +366,7 @@ swal(
   confirmButtonText: 'Oui, on supprime !',
   cancelButtonText: 'Annuler !'
 }).then(function () {
- document.location.href="supp_monactivite.php?id_activite="+idactivite;
+ document.location.href="supp_monactivite.php?id_activite="+idactivite+"&id_user="+id_user;
 })
     
  }         

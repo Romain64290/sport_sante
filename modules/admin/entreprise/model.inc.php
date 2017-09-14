@@ -207,17 +207,19 @@ return $data;
  * Affichage de tous les utilisateurs
  **************************************************************************/
   
- function afficheTousUser()
+ function afficheTousUser($debut_scolaire,$fin_scolaire)
   {
 	
 
 try{
 // recherche de charque particpant 
-$select = $this->con->prepare('SELECT entreprise_user.id_entreprise_user,nom_entreprise_user,prenom_entreprise_user,age_entreprise_user
+$select = $this->con->prepare('SELECT entreprise_user.id_entreprise_user,nom_entreprise_user,prenom_entreprise_user,age_entreprise_user,date_inscription
 						FROM entreprise_user
+                                                WHERE date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire
 						ORDER BY nom_entreprise_user ASC
 						');
-						
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);						
 $select->execute();
 
  }

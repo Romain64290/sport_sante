@@ -301,17 +301,18 @@ return $data;
  * Affichage de tous les utilisateurs
  **************************************************************************/
   
- function afficheMembreAnnuel()
+ function afficheMembreAnnuel($debut_scolaire,$fin_scolaire)
   {
 
 // recherche de charque particpant 
 	try{
 $select = $this->con->prepare('SELECT *
 						FROM membres
-						WHERE id_typemembre=1
+						WHERE id_typemembre=1 AND date_inscription > :debut_scolaire AND date_inscription < :fin_scolaire
 						ORDER BY nom_membre ASC
 						');
-						
+$select->bindParam(':debut_scolaire', $debut_scolaire, PDO::PARAM_STR);
+$select->bindParam(':fin_scolaire', $fin_scolaire, PDO::PARAM_STR);							
 $select->execute();
 		}
   catch (PDOException $e){
